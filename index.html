@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: 
+                linear-gradient(180deg, #87CEEB 0%, #87CEEB 40%, #5D8A3E 40%, #5D8A3E 100%);
+            font-family: 'VT323', monospace;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #7a7a7a 0px,
+                    #7a7a7a 2px,
+                    #828282 2px,
+                    #828282 4px
+                ),
+                linear-gradient(180deg, #8B8B8B 0%, #6B6B6B 100%);
+            border: 4px solid #3d3d3d;
+            border-radius: 4px;
+            padding: 12px;
+            box-shadow: 
+                0 0 0 4px #4a4a4a,
+                0 8px 0 #2a2a2a,
+                0 8px 20px rgba(0,0,0,0.5);
+            max-width: 340px;
+            width: 100%;
+        }
+
+        .display {
+            background: 
+                linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 3px solid #3d3d3d;
+            border-radius: 2px;
+            padding: 15px;
+            margin-bottom: 12px;
+            text-align: right;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .display-previous {
+            color: #888;
+            font-size: 18px;
+            min-height: 22px;
+        }
+
+        .display-current {
+            color: #fff;
+            font-size: 36px;
+            word-break: break-all;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        button {
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            padding: 12px 8px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.05s, box-shadow 0.05s;
+            text-transform: uppercase;
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .btn-number {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #C7B382 0px,
+                    #C7B382 1px,
+                    #D4C494 1px,
+                    #D4C494 2px
+                ),
+                linear-gradient(180deg, #DBD0A8 0%, #B8A670 100%);
+            border: 3px solid #8B7355;
+            color: #3d2914;
+            box-shadow: 
+                0 0 0 3px #5C4A32,
+                0 4px 0 #3d2914,
+                0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .btn-number:hover {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #E8D9B8 0px,
+                    #E8D9B8 1px,
+                    #F0E5C8 1px,
+                    #F0E5C8 2px
+                ),
+                linear-gradient(180deg, #F0E5C8 0%, #D4C494 100%);
+        }
+
+        .btn-operator {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #9E9E9E 0px,
+                    #9E9E9E 1px,
+                    #A8A8A8 1px,
+                    #A8A8A8 2px
+                ),
+                linear-gradient(180deg, #B0B0B0 0%, #808080 100%);
+            border: 3px solid #5a5a5a;
+            color: #1a1a1a;
+            box-shadow: 
+                0 0 0 3px #3d3d3d,
+                0 4px 0 #2a2a2a,
+                0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .btn-operator:hover {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #B8B8B8 0px,
+                    #B8B8B8 1px,
+                    #C4C4C4 1px,
+                    #C4C4C4 2px
+                ),
+                linear-gradient(180deg, #C8C8C8 0%, #989898 100%);
+        }
+
+        .btn-equals {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #5D8A3E 0px,
+                    #5D8A3E 1px,
+                    #6B9E4C 1px,
+                    #6B9E4C 2px
+                ),
+                linear-gradient(180deg, #7CB858 0%, #4D7032 100%);
+            border: 3px solid #2d4a1c;
+            color: #1a2e0d;
+            box-shadow: 
+                0 0 0 3px #1e3212,
+                0 4px 0 #142209,
+                0 4px 6px rgba(0,0,0,0.3);
+            grid-column: span 2;
+        }
+
+        .btn-equals:hover {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #6B9E4C 0px,
+                    #6B9E4C 1px,
+                    #7BB858 1px,
+                    #7BB858 2px
+                ),
+                linear-gradient(180deg, #8BCF66 0%, #5D8A3E 100%);
+        }
+
+        .btn-clear {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #A05050 0px,
+                    #A05050 1px,
+                    #B05858 1px,
+                    #B05858 2px
+                ),
+                linear-gradient(180deg, #C06060 0%, #803830 100%);
+            border: 3px solid #5a2820;
+            color: #2d1410;
+            box-shadow: 
+                0 0 0 3px #3d1a14,
+                0 4px 0 #2a120c,
+                0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .btn-clear:hover {
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    #B05858 0px,
+                    #B05858 1px,
+                    #C06060 1px,
+                    #C06060 2px
+                ),
+                linear-gradient(180deg, #D06868 0%, #984438 100%);
+        }
+
+        @media (max-width: 400px) {
+            .calculator {
+                padding: 8px;
+            }
+
+            .display {
+                padding: 10px;
+                min-height: 60px;
+            }
+
+            .display-current {
+                font-size: 28px;
+            }
+
+            button {
+                font-size: 20px;
+                padding: 10px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">
+            <div class="display-previous" id="previous"></div>
+            <div class="display-current" id="current">0</div>
+        </div>
+        <div class="buttons">
+            <button class="btn-clear" onclick="clearAll()">C</button>
+            <button class="btn-operator" onclick="appendOperator('/')">/</button>
+            <button class="btn-operator" onclick="appendOperator('*')">×</button>
+            <button class="btn-operator" onclick="backspace()">⌫</button>
+            
+            <button class="btn-number" onclick="appendNumber('7')">7</button>
+            <button class="btn-number" onclick="appendNumber('8')">8</button>
+            <button class="btn-number" onclick="appendNumber('9')">9</button>
+            <button class="btn-operator" onclick="appendOperator('-')">-</button>
+            
+            <button class="btn-number" onclick="appendNumber('4')">4</button>
+            <button class="btn-number" onclick="appendNumber('5')">5</button>
+            <button class="btn-number" onclick="appendNumber('6')">6</button>
+            <button class="btn-operator" onclick="appendOperator('+')">+</button>
+            
+            <button class="btn-number" onclick="appendNumber('1')">1</button>
+            <button class="btn-number" onclick="appendNumber('2')">2</button>
+            <button class="btn-number" onclick="appendNumber('3')">3</button>
+            <button class="btn-number" onclick="appendNumber('.')">.</button>
+            
+            <button class="btn-number" onclick="appendNumber('0')">0</button>
+            <button class="btn-equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let current = '0';
+        let previous = '';
+        let operator = null;
+        let shouldResetScreen = false;
+
+        const currentDisplay = document.getElementById('current');
+        const previousDisplay = document.getElementById('previous');
+
+        function updateDisplay() {
+            currentDisplay.textContent = current;
+            previousDisplay.textContent = previous;
+        }
+
+        function appendNumber(num) {
+            if (shouldResetScreen) {
+                current = '';
+                shouldResetScreen = false;
+            }
+            
+            if (num === '.' && current.includes('.')) return;
+            
+            if (current === '0' && num !== '.') {
+                current = num;
+            } else {
+                current += num;
+            }
+            
+            if (current.length > 12) {
+                current = current.slice(0, 12);
+            }
+            
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operator !== null && !shouldResetScreen) {
+                calculate();
+            }
+            previous = current;
+            operator = op;
+            shouldResetScreen = true;
+            previousDisplay.textContent = `${previous} ${operator}`;
+            updateDisplay();
+        }
+
+        function calculate() {
+            if (operator === null || shouldResetScreen) return;
+            
+            let result;
+            const prev = parseFloat(previous);
+            const curr = parseFloat(current);
+            
+            if (isNaN(prev) || isNaN(curr)) return;
+            
+            switch (operator) {
+                case '+':
+                    result = prev + curr;
+                    break;
+                case '-':
+                    result = prev - curr;
+                    break;
+                case '*':
+                    result = prev * curr;
+                    break;
+                case '/':
+                    if (curr === 0) {
+                        current = 'Error';
+                        operator = null;
+                        previous = '';
+                        updateDisplay();
+                        return;
+                    }
+                    result = prev / curr;
+                    break;
+                default:
+                    return;
+            }
+            
+            result = Math.round(result * 100000000) / 100000000;
+            
+            let resultStr = result.toString();
+            if (resultStr.length > 12) {
+                resultStr = result.toExponential(6);
+            }
+            
+            previous = '';
+            current = resultStr;
+            operator = null;
+            shouldResetScreen = true;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            current = '0';
+            previous = '';
+            operator = null;
+            shouldResetScreen = false;
+            updateDisplay();
+        }
+
+        function backspace() {
+            if (shouldResetScreen) return;
+            
+            if (current.length === 1 || current === '0') {
+                current = '0';
+            } else {
+                current = current.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '0' && e.key <= '9') {
+                appendNumber(e.key);
+            } else if (e.key === '.') {
+                appendNumber('.');
+            } else if (e.key === '+') {
+                appendOperator('+');
+            } else if (e.key === '-') {
+                appendOperator('-');
+            } else if (e.key === '*') {
+                appendOperator('*');
+            } else if (e.key === '/') {
+                appendOperator('/');
+            } else if (e.key === 'Enter' || e.key === '=') {
+                calculate();
+            } else if (e.key === 'Escape') {
+                clearAll();
+            } else if (e.key === 'Backspace') {
+                backspace();
+            }
+        });
+    </script>
+</body>
+</html>
